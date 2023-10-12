@@ -1,0 +1,13 @@
+= form_for @weather_information do |f|
+  - if @weather_information.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@weather_information.errors.count, "error")} prohibited this weather_information from being saved:"
+      %ul
+        - @weather_information.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :zip_code
+    = f.number_field :zip_code
+  .actions
+    = f.submit 'Find your weather!', class: "w-full text-white bg-blue-700 hover:bg-gray-500 font-bold rounded-lg text-sm px-5 py-2.5 text-center mt-5"

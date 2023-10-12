@@ -1,3 +1,4 @@
 Rails.application.routes.draw do
-  root 'public#index'
+  resources :weather_informations
+  root 'weather_informations#new'
 end
