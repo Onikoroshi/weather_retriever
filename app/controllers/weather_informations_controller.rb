@@ -24,19 +24,19 @@ class WeatherInformationsController < ApplicationController
   def create
     respond_to do |format|
       begin
-        data = OpenWeatherService.new.retrieve_weather_info_by_lat_lng(weather_information_params[:latitude], weather_information_params[:longitude])
-        @weather_information = WeatherInformation.new(weather_information_params)
-        @weather_information.data = data
+        @weather_information = WeatherInformation.build_information(weather_information_params)
+        from_cache = @weather_information.from_cache?
 
         if @weather_information.save
-          format.html { redirect_to weather_information_url(@weather_information, given_address: weather_information_params[:given_address]), notice: "Weather information was successfully created." }
+          format.html { redirect_to weather_information_url(@weather_information, given_address: weather_information_params[:given_address]), notice: "Weather information was successfully #{from_cache ? "retrieved from cache" : "added to cache"}." }
           format.json { render :show, status: :created, location: @weather_information }
         else
           format.html { render :new, status: :unprocessable_entity }
           format.json { render json: @weather_information.errors, status: :unprocessable_entity }
         end
       rescue => e
-        ap e
+        ap e.message
+        ap e.backtrace
         error_message = "Malformed Address. Please choose one of the suggestions"
         flash[:error] = error_message
         format.html { render :new, status: :unprocessable_entity }

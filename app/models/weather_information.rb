@@ -1,5 +1,25 @@
 class WeatherInformation < ApplicationRecord
-  attr_accessor :latitude, :longitude, :given_address
+  attr_accessor :latitude, :longitude, :given_address, :cached
+
+  def self.build_information(weather_information_params)
+    info = self.find_or_initialize_by(postal_code: weather_information_params[:postal_code], country_code: weather_information_params[:country_code])
+
+    if info.ready_to_recache?
+      data = OpenWeatherService.new.retrieve_weather_info_by_lat_lng(weather_information_params[:latitude], weather_information_params[:longitude])
+      info.data = data
+      info.cached = true
+    end
+
+    info
+  end
+
+  def ready_to_recache?
+    new_record? || updated_at < 30.minutes.ago
+  end
+
+  def from_cache?
+    true != cached
+  end
 
   def temperature
     kelvin = data["main"]["temp"].to_f
