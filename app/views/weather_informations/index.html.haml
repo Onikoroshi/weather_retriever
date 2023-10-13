@@ -12,7 +12,7 @@
   %tbody
     - @weather_informations.each do |weather_information|
       %tr
-        %td= weather_information.zip_code
+        %td= weather_information.postal_code
         %td= weather_information.data
         %td= link_to 'Show', weather_information
         %td= link_to 'Edit', edit_weather_information_path(weather_information)

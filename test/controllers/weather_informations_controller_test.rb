@@ -17,7 +17,7 @@ class WeatherInformationsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create weather_information" do
     assert_difference("WeatherInformation.count") do
-      post weather_informations_url, params: { weather_information: { data: @weather_information.data, zip_code: @weather_information.zip_code } }
+      post weather_informations_url, params: { weather_information: { data: @weather_information.data, postal_code: @weather_information.postal_code } }
     end
 
     assert_redirected_to weather_information_url(WeatherInformation.last)
@@ -34,7 +34,7 @@ class WeatherInformationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update weather_information" do
-    patch weather_information_url(@weather_information), params: { weather_information: { data: @weather_information.data, zip_code: @weather_information.zip_code } }
+    patch weather_information_url(@weather_information), params: { weather_information: { data: @weather_information.data, postal_code: @weather_information.postal_code } }
     assert_redirected_to weather_information_url(@weather_information)
   end
 

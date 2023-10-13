@@ -1,4 +1,4 @@
-= form_for @weather_information do |f|
+= form_for @weather_information, data: { controller: "places", action: "google-maps-callback@window->places#initMap" } do |f|
   - if @weather_information.errors.any?
     #error_explanation
       %h2= "#{pluralize(@weather_information.errors.count, "error")} prohibited this weather_information from being saved:"
@@ -6,8 +6,19 @@
         - @weather_information.errors.full_messages.each do |message|
           %li= message
 
+  - if flash[:error].present?
+    %div{ class: "p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50", role: "alert" }
+      %h2= flash[:error]
+
   .field
-    = f.label :zip_code
-    = f.number_field :zip_code
+    = f.text_field :given_address, class: "form-control w-full", data: { "places-target" => "field" }
+
+    = f.hidden_field :latitude, class: "form-control", data: { "places-target" => "latitude"}
+
+    = f.hidden_field :longitude, class: "form-control", data: { "places-target" => "longitude"}
+
+    = f.hidden_field :country_code, class: "form-control", data: { "places-target" => "country_code"}
+
+    = f.hidden_field :postal_code, class: "form-control", data: { "places-target" => "postal_code" }
   .actions
     = f.submit 'Find your weather!', class: "w-full text-white bg-blue-700 hover:bg-gray-500 font-bold rounded-lg text-sm px-5 py-2.5 text-center mt-5"

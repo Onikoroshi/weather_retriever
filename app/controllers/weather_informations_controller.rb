@@ -1,5 +1,6 @@
 class WeatherInformationsController < ApplicationController
   before_action :set_weather_information, only: %i[ show edit update destroy ]
+  before_action :blank_weather_information, only: %i[ new create ]
 
   # GET /weather_informations or /weather_informations.json
   def index
@@ -8,11 +9,11 @@ class WeatherInformationsController < ApplicationController
 
   # GET /weather_informations/1 or /weather_informations/1.json
   def show
+    @given_address = params[:given_address]
   end
 
   # GET /weather_informations/new
   def new
-    @weather_information = WeatherInformation.new
   end
 
   # GET /weather_informations/1/edit
@@ -21,17 +22,25 @@ class WeatherInformationsController < ApplicationController
 
   # POST /weather_informations or /weather_informations.json
   def create
-    data = OpenWeatherService.new.retrieve_weather_info_by_zip_code(weather_information_params[:zip_code])
-    @weather_information = WeatherInformation.new(weather_information_params)
-    @weather_information.data = data
-
     respond_to do |format|
-      if @weather_information.save
-        format.html { redirect_to weather_information_url(@weather_information), notice: "Weather information was successfully created." }
-        format.json { render :show, status: :created, location: @weather_information }
-      else
+      begin
+        data = OpenWeatherService.new.retrieve_weather_info_by_lat_lng(weather_information_params[:latitude], weather_information_params[:longitude])
+        @weather_information = WeatherInformation.new(weather_information_params)
+        @weather_information.data = data
+
+        if @weather_information.save
+          format.html { redirect_to weather_information_url(@weather_information, given_address: weather_information_params[:given_address]), notice: "Weather information was successfully created." }
+          format.json { render :show, status: :created, location: @weather_information }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @weather_information.errors, status: :unprocessable_entity }
+        end
+      rescue => e
+        ap e
+        error_message = "Malformed Address. Please choose one of the suggestions"
+        flash[:error] = error_message
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @weather_information.errors, status: :unprocessable_entity }
+        format.json { render json: error_message, status: :unprocessable_entity }
       end
     end
   end
@@ -65,8 +74,12 @@ class WeatherInformationsController < ApplicationController
       @weather_information = WeatherInformation.find(params[:id])
     end
 
+    def blank_weather_information
+      @weather_information = WeatherInformation.new
+    end
+
     # Only allow a list of trusted parameters through.
     def weather_information_params
-      params.require(:weather_information).permit(:zip_code, :data)
+      params.require(:weather_information).permit(:postal_code, :country_code, :latitude, :longitude, :data, :given_address)
     end
 end

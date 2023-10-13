@@ -15,7 +15,7 @@ class WeatherInformationsTest < ApplicationSystemTestCase
     click_on "New weather information"
 
     fill_in "Data", with: @weather_information.data
-    fill_in "Zip code", with: @weather_information.zip_code
+    fill_in "Zip code", with: @weather_information.postal_code
     click_on "Create Weather information"
 
     assert_text "Weather information was successfully created"
@@ -27,7 +27,7 @@ class WeatherInformationsTest < ApplicationSystemTestCase
     click_on "Edit this weather information", match: :first
 
     fill_in "Data", with: @weather_information.data
-    fill_in "Zip code", with: @weather_information.zip_code
+    fill_in "Zip code", with: @weather_information.postal_code
     click_on "Update Weather information"
 
     assert_text "Weather information was successfully updated"

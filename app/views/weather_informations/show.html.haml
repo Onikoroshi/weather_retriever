@@ -1,12 +1,25 @@
-%p#notice= notice
-
 %p
-  %b Zip code:
-  = @weather_information.zip_code
+  %b Given Address
+  = @given_address
 %p
-  %b Data:
-  = @weather_information.data
+  %b Temperature:
+  = @weather_information.temperature
+  F
+%p
+  %b Humidity
+  = @weather_information.humidity
+  \%
+%p
+  %b Wind Speed
+  = @weather_information.wind_speed
+  miles per hour
+%p
+  %b Wind Direction
+  = @weather_information.wind_direction_degrees
+  °
+%p
+  %b Sky
+  = @weather_information.sky_description
+  %img{src: @weather_information.sky_icon_uri}
 
-= link_to 'Edit', edit_weather_information_path(@weather_information)
-\|
-= link_to 'Back', weather_informations_path
+= link_to 'Find More Weather!', root_path, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium"

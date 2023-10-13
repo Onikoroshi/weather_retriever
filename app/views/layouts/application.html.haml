@@ -9,6 +9,7 @@
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
+    %script{:async => "false", "data-turbolinks-eval" => "false", :defer => "defer", :src => "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.credentials.google_maps[:api_key]}&libraries=places&callback=initMap"}
   %body
     %main.container.mx-auto.mt-28.px-5.flex
       %div

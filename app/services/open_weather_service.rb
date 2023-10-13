@@ -5,7 +5,11 @@ class OpenWeatherService
     )
   end
 
-  def retrieve_weather_info_by_zip_code(zip_code)
-    client.current_weather(zip: zip_code, country: "US")
+  def retrieve_weather_info_by_postal_code(postal_code)
+    client.current_weather(zip: postal_code, country: "US")
+  end
+
+  def retrieve_weather_info_by_lat_lng(latitude, longitude)
+    client.current_weather(lat: latitude, lon: longitude)
   end
 end
