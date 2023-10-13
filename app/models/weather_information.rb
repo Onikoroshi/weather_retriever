@@ -1,5 +1,5 @@
 class WeatherInformation < ApplicationRecord
-  attr_accessor :latitude, :longitude, :given_address, :cached
+  attr_accessor :latitude, :longitude, :given_address, :recached
 
   def self.build_information(weather_information_params)
     info = self.find_or_initialize_by(postal_code: weather_information_params[:postal_code], country_code: weather_information_params[:country_code])
@@ -7,7 +7,7 @@ class WeatherInformation < ApplicationRecord
     if info.ready_to_recache?
       data = OpenWeatherService.new.retrieve_weather_info_by_lat_lng(weather_information_params[:latitude], weather_information_params[:longitude])
       info.data = data
-      info.cached = true
+      info.recached = true
     end
 
     info
@@ -18,32 +18,38 @@ class WeatherInformation < ApplicationRecord
   end
 
   def from_cache?
-    true != cached
+    true != recached
   end
 
   def temperature
-    kelvin = data["main"]["temp"].to_f
-    farenheit = ((kelvin - 273.15) * 9 / 5 + 32).round(2)
+    return nil if data.blank?
+    kelvin = data.dig("main", "temp")
+    farenheit = ((kelvin.to_f - 273.15) * 9 / 5 + 32).round(2) unless kelvin.nil?
   end
 
   def humidity
-    data["main"]["humidity"]
+    return nil if data.blank?
+    data.dig("main", "humidity")
   end
 
   def wind_speed
-    metric = data["wind"]["speed"]
-    miles_per_hour = (metric * 2.23694).round(2)
+    return nil if data.blank?
+    metric = data.dig("wind", "speed")
+    miles_per_hour = (metric.to_f * 2.23694).round(2) unless metric.nil?
   end
 
   def wind_direction_degrees
-    data["wind"]["deg"]
+    return nil if data.blank?
+    data.dig("wind", "deg")
   end
 
   def sky_description
-    data["weather"][0]["description"]
+    return nil if data.blank?
+    data.dig("weather", 0, "description")
   end
 
   def sky_icon_uri
-    data["weather"][0]["icon_uri"]
+    return nil if data.blank?
+    data.dig("weather", 0, "icon_uri")
   end
 end

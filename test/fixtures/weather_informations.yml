@@ -1,8 +1,18 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  postal_code: 1
+  postal_code: "93240"
+  country_code: "US"
   data:
+    :main:
+      :temp: "250"
+      :humidity: "34"
+    :wind:
+      :speed: "5.3"
+      :deg: "56"
+    :weather:
+      - :description: "clear skies"
+        :icon_uri: "http://openweathermap.org/img/wn/04n@2x.png"
 
 two:
   postal_code: 1

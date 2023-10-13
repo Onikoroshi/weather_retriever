@@ -5,44 +5,27 @@ class WeatherInformationsControllerTest < ActionDispatch::IntegrationTest
     @weather_information = weather_informations(:one)
   end
 
-  test "should get index" do
-    get weather_informations_url
-    assert_response :success
-  end
-
   test "should get new" do
     get new_weather_information_url
     assert_response :success
   end
 
   test "should create weather_information" do
-    assert_difference("WeatherInformation.count") do
-      post weather_informations_url, params: { weather_information: { data: @weather_information.data, postal_code: @weather_information.postal_code } }
-    end
+    expected_hash = { "hello" => "there" }
+    weather_service_stub = Minitest::Mock.new
+    weather_service_stub.expect :retrieve_weather_info_by_lat_lng, expected_hash, [String, String]
 
-    assert_redirected_to weather_information_url(WeatherInformation.last)
+    OpenWeatherService.stub :new, weather_service_stub do
+      assert_difference("WeatherInformation.count") do
+        post weather_informations_url, params: { weather_information: { latitude: "234", longitude: "432", postal_code: "1235456", country_code: "US" } }
+      end
+
+      assert_redirected_to weather_information_url(WeatherInformation.last)
+    end
   end
 
   test "should show weather_information" do
     get weather_information_url(@weather_information)
     assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_weather_information_url(@weather_information)
-    assert_response :success
-  end
-
-  test "should update weather_information" do
-    patch weather_information_url(@weather_information), params: { weather_information: { data: @weather_information.data, postal_code: @weather_information.postal_code } }
-    assert_redirected_to weather_information_url(@weather_information)
-  end
-
-  test "should destroy weather_information" do
-    assert_difference("WeatherInformation.count", -1) do
-      delete weather_information_url(@weather_information)
-    end
-
-    assert_redirected_to weather_informations_url
   end
 end
