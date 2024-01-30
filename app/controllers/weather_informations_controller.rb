@@ -12,10 +12,23 @@ class WeatherInformationsController < ApplicationController
   def create
     respond_to do |format|
       begin
-        @weather_information = WeatherInformation.build_information(weather_information_params)
+        # Code to run to use Rails cache
+        # @weather_information = WeatherInformation.build_information(weather_information_params)
+
+        # Code to run to use custom cache
+        @weather_information = WeatherInformation.build_information_with_rails_cache(weather_information_params)
+
         from_cache = @weather_information.from_cache?
 
-        if @weather_information.save
+        if @weather_information.present?
+          # Code to run to use Rails cache
+          # format.html {
+          #   @given_address = weather_information_params[:given_address]
+          #   flash[:notice] = "Weather information was successfully #{from_cache ? "retrieved from cache" : "added to cache"}."
+          #   render :show, status: 422 # This is a hack to force turbolinks to render without redirecting. The full solution would likely involve disabling turbolinks in this particular situation.
+          # }
+
+          # Code to run to use custom cache
           format.html { redirect_to weather_information_url(@weather_information, given_address: weather_information_params[:given_address]), notice: "Weather information was successfully #{from_cache ? "retrieved from cache" : "added to cache"}." }
         else
           format.html { render :new, status: :unprocessable_entity }

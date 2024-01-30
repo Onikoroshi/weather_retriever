@@ -1,6 +1,19 @@
 class WeatherInformation < ApplicationRecord
   attr_accessor :latitude, :longitude, :given_address, :recached
 
+  # Use built-in Rails cache; no database hits
+  def self.build_information_with_rails_cache(weather_information_params)
+    info = self.new(postal_code: weather_information_params[:postal_code], country_code: weather_information_params[:country_code], recached: false)
+
+    info.data = Rails.cache.fetch("weather_info-#{weather_information_params[:postal_code]}-#{weather_information_params[:country_code]}", expires_in: 30.minutes) do
+      info.recached = true
+      OpenWeatherService.new.retrieve_weather_info_by_lat_lng(weather_information_params[:latitude], weather_information_params[:longitude])
+    end
+
+    info
+  end
+
+  # Use database and cron job as custom cache
   def self.build_information(weather_information_params)
     info = self.find_or_initialize_by(postal_code: weather_information_params[:postal_code], country_code: weather_information_params[:country_code])
 

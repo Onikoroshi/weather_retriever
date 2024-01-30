@@ -20,6 +20,26 @@ rvm install 3.2.2
 install gem rails
 ```
 
+### install included gems
+```sh
+bundle install
+```
+
+### build/rebuild the database on Postgres
+```sh
+rake db:rebuild
+```
+
+### spin up the local server
+```sh
+bin/dev
+```
+
+### run tests
+```sh
+rails test
+```
+
 ### Engage Cron if you want the cleanup job to run
 #### apply the schedule to the cron table with the correct environment set
 ```sh
@@ -65,4 +85,5 @@ Use the [Open Weather Ruby Client Gem](https://github.com/dblock/open-weather-ru
 3. If there is no recent data, reach out to the Open Weather API, get a report for that lat/long, and store that in the database.
 4. Cron Job runs every day to catch any stale data hanging around.
 
-I was tempted to use simple calls to `Rails.cache`, but eventually decided that cutting out half of the functionality of a Rails application (creating and interacting with databases) was not a good idea. This strategy is intended not for ease of implementation, but to showcase a more comprehensive use of the Rails ecosystem.
+# A Note on Caching
+When seeing the word "Cache" in the task description, the first strategy that comes to mind is to use the built-in Rails cache. This strategy is very simple and straightforward and does not use a database at all. So, since the position description is about managing databases, I interpreted that requirement a little differently and implemented my own solution that uses the database and a cron job as a custom cache. This strategy is intended not for ease of implementation, but to showcase a more comprehensive use of the Rails ecosystem. However, I also implemented the more simplistic solution with Rails cache to show that I can work with that functionality as well. The relevant lines of code are commented out with explanations.
