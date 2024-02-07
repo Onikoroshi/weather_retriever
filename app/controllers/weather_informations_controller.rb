@@ -13,14 +13,14 @@ class WeatherInformationsController < ApplicationController
     respond_to do |format|
       begin
         # Code to run to use Rails cache
-        # @weather_information = WeatherInformation.build_information(weather_information_params)
+        # @weather_information = WeatherInformation.build_information_with_rails_cache(weather_information_params)
 
         # Code to run to use custom cache
-        @weather_information = WeatherInformation.build_information_with_rails_cache(weather_information_params)
+        @weather_information = WeatherInformation.build_information(weather_information_params)
 
         from_cache = @weather_information.from_cache?
 
-        if @weather_information.present?
+        if @weather_information.save
           # Code to run to use Rails cache
           # format.html {
           #   @given_address = weather_information_params[:given_address]
